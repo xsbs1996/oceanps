@@ -3,10 +3,11 @@ package oceanps
 import (
 	"context"
 	"fmt"
-	"github.com/xsbs1996/oceanps/funcs"
 	"sync"
 
 	"github.com/gorilla/websocket"
+
+	"github.com/xsbs1996/oceanps/oceanpsfuncs"
 )
 
 var (
@@ -43,11 +44,11 @@ type EventTopic struct {
 	mu        sync.RWMutex                      // 读写锁
 	ConnList  map[*websocket.Conn]chan<- []byte // 普通订阅者
 	MsgChan   chan []byte                       // 消息通道
-	pPManage  funcs.PushPullManage              // 消息管理者
+	pPManage  oceanpsfuncs.PushPullManage       // 消息管理者
 }
 
 // NewEventTopic 新建主题
-func NewEventTopic(topic string, user string, pPM funcs.PushPullManage) *EventTopic {
+func NewEventTopic(topic string, user string, pPM oceanpsfuncs.PushPullManage) *EventTopic {
 	queueName := fmt.Sprintf("%s-%s", topic, user)
 	event := GetEventTopicQueue(queueName)
 	if event != nil {

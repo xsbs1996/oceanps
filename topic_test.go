@@ -2,12 +2,12 @@ package oceanps
 
 import (
 	"fmt"
-	"github.com/xsbs1996/oceanps/funcs"
+	"github.com/xsbs1996/oceanps/oceanpsfuncs"
 	"testing"
 )
 
 func TestGetEventTopicQueue(t *testing.T) {
-	e := NewEventTopic("TestTopic", "User", &funcs.RedisPushPull{
+	e := NewEventTopic("TestTopic", "User", &oceanpsfuncs.RedisPushPull{
 		Ip:       "127.0.0.1",
 		Port:     "6379",
 		DB:       0,
