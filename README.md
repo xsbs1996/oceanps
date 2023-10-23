@@ -1,4 +1,4 @@
-# sjypubsub
+# oceanps
 golang消息队列，可灵活支持多种方式，内置redis方式
 
 # 使用方法
