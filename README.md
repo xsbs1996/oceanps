@@ -11,3 +11,5 @@ golang消息队列，可灵活支持多种方式，内置redis方式
 4.NewEventTopic 方法返回一个结构体,通过此结构体的 MsgChan channel传递消息
 
 5.详细方法可见 oceanpsfuncs->redisfunc_test.go 与 topic_test.go
+
+6. 使用damo可看https://github.com/xsbs1996/oceanps_demo项目
