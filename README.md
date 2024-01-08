@@ -25,7 +25,7 @@ golang消息队列，可灵活支持多种方式，目前内置方式如下
 2. 订阅消息
    ```
    // 全员主题第二个参数传递空字符串，如果每个用户是一个主题第二个参数则传值
-   oceanps.NewEventTopic("队列名称", "会员主题名称", config.OceanpsRedisConf)
+   oceanps.NewEventTopic("队列名称", "会员主题名称", RedisPushPull/RabbitMqPushPull)
     ```
 
 3. 发布消息 
