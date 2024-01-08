@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/redis/go-redis/v9 v9.2.1
+	github.com/streadway/amqp v1.1.0
 )
 
 require (
