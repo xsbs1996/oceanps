@@ -12,7 +12,7 @@ func TestRedisPushMsg(t *testing.T) {
 		Ip:       "127.0.0.1",
 		Port:     "6379",
 		DB:       0,
-		Password: "",
+		Password: "exchange",
 	}
 	for i := 0; i <= 100; i++ {
 		err := redisC.PushMsgFn(context.Background(), "TestRedisPushMsg", []byte("hello world"))
@@ -30,7 +30,7 @@ func TestRedisPullMsg(t *testing.T) {
 		Ip:       "127.0.0.1",
 		Port:     "6379",
 		DB:       0,
-		Password: "",
+		Password: "exchange",
 	}
 	msgChan := make(chan []byte, 10)
 	go func() {

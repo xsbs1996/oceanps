@@ -27,10 +27,12 @@ func GetRedisClient(c *RedisPushPull) (*redis.Client, error) {
 
 // CheckClient 检测链接
 func (c *RedisPushPull) CheckClient() error {
-	_, err := GetRedisClient(c)
+	rdb, err := GetRedisClient(c)
 	if err != nil {
 		return err
 	}
+	defer func(rdb *redis.Client) { _ = rdb.Close() }(rdb)
+
 	return nil
 }
 
@@ -40,6 +42,7 @@ func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []b
 	if err != nil {
 		return err
 	}
+	defer func(rdb *redis.Client) { _ = rdb.Close() }(rdb)
 
 	err = rdb.LPush(ctx, queueName, string(msg)).Err()
 	if err != nil {
@@ -54,6 +57,7 @@ func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan
 	if err != nil {
 		return err
 	}
+	defer func(rdb *redis.Client) { _ = rdb.Close() }(rdb)
 
 	for {
 		select {
