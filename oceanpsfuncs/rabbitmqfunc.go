@@ -106,7 +106,7 @@ func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg 
 	}
 
 	//消息体
-	return ch.Publish("", queueName, false, false, amqp.Publishing{
+	return ch.PublishWithContext(ctx, "", queueName, false, false, amqp.Publishing{
 		DeliveryMode: amqp.Persistent,
 		ContentType:  "text/plain",
 		Body:         msg,
