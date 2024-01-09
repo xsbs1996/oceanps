@@ -68,7 +68,7 @@ func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan
 			if err != nil {
 				continue
 			}
-			// result 是一个字符串数组，第一个元素是列表的 key，第二个元素是弹出的消息
+			// 第一个元素是列表的 key，第二个元素是弹出的消息
 			msg := result[1]
 			msgChan <- []byte(msg)
 		}
