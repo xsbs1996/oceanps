@@ -13,6 +13,10 @@ func TestGetEventTopicQueue(t *testing.T) {
 		DB:       0,
 		Password: "",
 	})
+	if e.Error != nil {
+		fmt.Println(e.Error)
+		return
+	}
 
 	go func() {
 		for i := 0; i <= 100; i++ {

@@ -79,6 +79,15 @@ func heartbeat() {
 	}
 }
 
+// CheckClient 检测链接
+func (c *RabbitMqPushPull) CheckClient() error {
+	_, err := GetRabbitMqConn(c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // PushMsgFn redis发送订阅消息
 func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte) error {
 	conn, err := GetRabbitMqConn(c)

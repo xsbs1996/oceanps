@@ -72,11 +72,14 @@ func NewEventTopic(topic string, user string, pPM oceanpsfuncs.PushPullManage) *
 
 	// 拉取消息
 	if !ok {
+		err := event.pPManage.CheckClient()
+		if err != nil {
+			event.Error = err
+			return event
+		}
 		go func() {
-			err := event.pPManage.PullMsgFn(ctx, event.queueName, event.MsgChan)
-			if err != nil {
-				event.Error = err
-				return
+			if err := event.pPManage.PullMsgFn(ctx, event.queueName, event.MsgChan); err != nil {
+				panic(err)
 			}
 		}()
 	}

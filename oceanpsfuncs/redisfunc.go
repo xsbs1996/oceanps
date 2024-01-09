@@ -25,6 +25,15 @@ func GetRedisClient(c *RedisPushPull) (*redis.Client, error) {
 	return redisClient, err
 }
 
+// CheckClient 检测链接
+func (c *RedisPushPull) CheckClient() error {
+	_, err := GetRedisClient(c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // PushMsgFn redis发送订阅消息
 func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte) error {
 	rdb, err := GetRedisClient(c)
