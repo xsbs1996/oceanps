@@ -45,6 +45,7 @@ type EventTopic struct {
 	ConnList  map[*websocket.Conn]chan<- []byte // 普通订阅者
 	MsgChan   chan []byte                       // 消息通道
 	pPManage  oceanpsfuncs.PushPullManage       // 消息管理者
+	Error     error                             // 错误
 }
 
 // NewEventTopic 新建主题
@@ -74,7 +75,8 @@ func NewEventTopic(topic string, user string, pPM oceanpsfuncs.PushPullManage) *
 		go func() {
 			err := event.pPManage.PullMsgFn(ctx, event.queueName, event.MsgChan)
 			if err != nil {
-				panic(err)
+				event.Error = err
+				return
 			}
 		}()
 	}
