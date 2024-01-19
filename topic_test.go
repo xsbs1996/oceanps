@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"github.com/xsbs1996/oceanps/oceanpsfuncs"
 	"testing"
+	"time"
 )
 
 func TestGetEventTopicQueue(t *testing.T) {
-	e := NewEventTopic("TestTopic", "User", &oceanpsfuncs.RedisPushPull{
+	e := NewEventTopic("TestTopic", "User", time.Second*5, &oceanpsfuncs.RedisPushPull{
 		Ip:       "127.0.0.1",
 		Port:     "6379",
 		DB:       0,

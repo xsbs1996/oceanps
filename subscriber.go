@@ -45,16 +45,25 @@ func (e *EventTopic) ForeachConnList(msgJson []byte) {
 	}
 }
 
-// 发送消息,5秒延迟
+// 发送消息,x秒延迟
 func (e *EventTopic) sendMsg(writeMsg chan<- []byte, msgJson []byte) {
-	ticker := time.NewTicker(time.Second * 5)
-	defer ticker.Stop()
-	for {
-		select {
-		case writeMsg <- msgJson:
-			return
-		case <-ticker.C:
-			return
+	if e.timeout > 0 {
+		ticker := time.NewTicker(time.Second * 5)
+		defer ticker.Stop()
+		for {
+			select {
+			case writeMsg <- msgJson:
+				return
+			case <-ticker.C:
+				return
+			}
+		}
+	} else {
+		for {
+			select {
+			case writeMsg <- msgJson:
+				return
+			}
 		}
 	}
 }

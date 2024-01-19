@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 
@@ -38,6 +39,7 @@ type TopicInterface interface {
 type EventTopic struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
+	timeout   time.Duration                     // 超时时间
 	topic     string                            // 主题名称
 	queueName string                            // 队列名称
 	user      string                            // 用户
@@ -49,7 +51,8 @@ type EventTopic struct {
 }
 
 // NewEventTopic 新建主题
-func NewEventTopic(topic string, user string, pPM oceanpsfuncs.PushPullManage) *EventTopic {
+// topic-主题名 user-用户名 timeout-消息传递超时时间,0为无超时
+func NewEventTopic(topic string, user string, timeout time.Duration, pPM oceanpsfuncs.PushPullManage) *EventTopic {
 	queueName := fmt.Sprintf("%s-%s", topic, user)
 	event := GetEventTopicQueue(queueName)
 	if event != nil {
@@ -60,6 +63,7 @@ func NewEventTopic(topic string, user string, pPM oceanpsfuncs.PushPullManage) *
 	event = &EventTopic{
 		ctx:       ctx,
 		cancel:    cancel,
+		timeout:   timeout,
 		topic:     topic,
 		queueName: queueName,
 		user:      user,
