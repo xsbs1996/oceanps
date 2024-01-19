@@ -48,7 +48,7 @@ func (e *EventTopic) ForeachConnList(msgJson []byte) {
 // 发送消息,x秒延迟
 func (e *EventTopic) sendMsg(writeMsg chan<- []byte, msgJson []byte) {
 	if e.timeout > 0 {
-		ticker := time.NewTicker(time.Second * 5)
+		ticker := time.NewTicker(e.timeout)
 		defer ticker.Stop()
 		for {
 			select {
