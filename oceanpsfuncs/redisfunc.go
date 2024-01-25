@@ -3,6 +3,7 @@ package oceanpsfuncs
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -53,6 +54,7 @@ func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []b
 
 // PullMsgFn redis拉取订阅消息并发送到管道
 func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan chan<- []byte) error {
+	defer close(msgChan)
 	rdb, err := GetRedisClient(c)
 	if err != nil {
 		return err
@@ -64,7 +66,7 @@ func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan
 		case <-ctx.Done():
 			return nil
 		default:
-			result, err := rdb.BRPop(ctx, 0, queueName).Result()
+			result, err := rdb.BRPop(ctx, time.Millisecond*10, queueName).Result()
 			if err != nil {
 				continue
 			}

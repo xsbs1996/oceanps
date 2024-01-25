@@ -2,6 +2,7 @@ package oceanps
 
 import (
 	"fmt"
+	"github.com/gorilla/websocket"
 	"github.com/xsbs1996/oceanps/oceanpsfuncs"
 	"testing"
 	"time"
@@ -19,8 +20,12 @@ func TestGetEventTopicQueue(t *testing.T) {
 		return
 	}
 
+	conn := &websocket.Conn{}
+	wMsg := make(chan []byte, 10)
+	e.Subscribe(conn, wMsg)
+
 	go func() {
-		for i := 0; i <= 100; i++ {
+		for i := 0; i <= 1; i++ {
 			err := e.Publish([]byte("hello world"))
 			if err != nil {
 				fmt.Println("err:", err)
@@ -29,7 +34,23 @@ func TestGetEventTopicQueue(t *testing.T) {
 		}
 	}()
 
-	for v := range e.MsgChan {
-		fmt.Println(string(v))
-	}
+	go func() {
+		time.Sleep(3 * time.Second)
+		e.Unsubscribe(conn, true)
+	}()
+
+	go func() {
+		for v := range e.MsgChan {
+			e.ForeachConnList(v)
+		}
+	}()
+
+	go func() {
+		for v := range wMsg {
+			fmt.Println(string(v))
+		}
+	}()
+
+	<-e.ctx.Done()
+
 }
