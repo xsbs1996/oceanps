@@ -66,7 +66,7 @@ func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan
 		case <-ctx.Done():
 			return nil
 		default:
-			result, err := rdb.BRPop(ctx, time.Millisecond*10, queueName).Result()
+			result, err := rdb.BRPop(ctx, time.Second*1, queueName).Result()
 			if err != nil {
 				continue
 			}
