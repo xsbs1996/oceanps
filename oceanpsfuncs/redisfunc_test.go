@@ -3,6 +3,7 @@ package oceanpsfuncs
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -15,12 +16,12 @@ func TestRedisPushMsg(t *testing.T) {
 		Password: "exchange",
 	}
 	for i := 0; i <= 100; i++ {
-		err := redisC.PushMsgFn(context.Background(), "TestRedisPushMsg", []byte("hello world"))
+		err := redisC.PushMsgFnExp(context.Background(), "TestRedisPushMsg"+strconv.Itoa(i), []byte("hello world"), time.Second*30)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		time.Sleep(time.Second * 2)
+
 	}
 	return
 }
