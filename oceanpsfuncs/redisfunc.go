@@ -53,7 +53,7 @@ func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []b
 }
 
 // PushMsgFnExp redis发送订阅消息并设置过期时间
-func (c *RedisPushPull) PushMsgFnExp(ctx context.Context, queueName string, msg []byte, expiration time.Duration) error {
+func (c *RedisPushPull) PushMsgFnExp(ctx context.Context, queueName string, msg []byte, exp time.Duration) error {
 	rdb, err := GetRedisClient(c)
 	if err != nil {
 		return err
@@ -67,7 +67,7 @@ func (c *RedisPushPull) PushMsgFnExp(ctx context.Context, queueName string, msg 
 	}
 
 	// 设置过期时间
-	err = rdb.Expire(ctx, queueName, expiration).Err()
+	err = rdb.Expire(ctx, queueName, exp).Err()
 	if err != nil {
 		return err
 	}
