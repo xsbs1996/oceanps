@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"strconv"
 	"sync"
 	"time"
 
@@ -88,7 +89,7 @@ func (c *RabbitMqPushPull) CheckClient() error {
 	return nil
 }
 
-// PushMsgFn redis发送订阅消息
+// PushMsgFn rabbit发送订阅消息
 func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte) error {
 	conn, err := GetRabbitMqConn(c)
 	if err != nil {
@@ -113,7 +114,7 @@ func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg 
 	})
 }
 
-// PushMsgFnExp redis发送订阅消息
+// PushMsgFnExp rabbit发送订阅消息
 func (c *RabbitMqPushPull) PushMsgFnExp(ctx context.Context, queueName string, msg []byte, exp time.Duration) error {
 	conn, err := GetRabbitMqConn(c)
 	if err != nil {
@@ -132,6 +133,7 @@ func (c *RabbitMqPushPull) PushMsgFnExp(ctx context.Context, queueName string, m
 
 	//消息体
 	return ch.PublishWithContext(ctx, "", queueName, false, false, amqp.Publishing{
+		Expiration:   strconv.FormatInt(exp.Milliseconds(), 10),
 		DeliveryMode: amqp.Persistent,
 		ContentType:  "text/plain",
 		Body:         msg,
