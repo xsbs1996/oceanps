@@ -38,7 +38,7 @@ func (c *RedisPushPull) CheckClient() error {
 }
 
 // PushMsgFn redis发送订阅消息
-func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte, exp time.Duration) error {
+func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte, exp time.Duration, extra ...string) error {
 	rdb, err := GetRedisClient(c)
 	if err != nil {
 		return err

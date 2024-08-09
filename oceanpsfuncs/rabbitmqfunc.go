@@ -90,7 +90,7 @@ func (c *RabbitMqPushPull) CheckClient() error {
 }
 
 // PushMsgFn rabbit发送订阅消息
-func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte, exp time.Duration) error {
+func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte, exp time.Duration, extra ...string) error {
 	conn, err := GetRabbitMqConn(c)
 	if err != nil {
 		return err

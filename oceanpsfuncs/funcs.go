@@ -10,9 +10,9 @@ import (
 var PushPullMap = &sync.Map{}
 
 type PushPullManage interface {
-	CheckClient() error                                                               // 检测链接
-	PushMsgFn(ctx context.Context, topic string, msg []byte, exp time.Duration) error // push消息
-	PullMsgFn(ctx context.Context, topic string, msgChan chan<- []byte) error         // pull消息
+	CheckClient() error                                                                                // 检测链接
+	PushMsgFn(ctx context.Context, topic string, msg []byte, exp time.Duration, extra ...string) error // push消息
+	PullMsgFn(ctx context.Context, topic string, msgChan chan<- []byte) error                          // pull消息
 }
 
 // RegisterPushPull 注册
