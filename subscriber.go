@@ -1,20 +1,21 @@
 package oceanps
 
 import (
+	"context"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
 // Subscribe 订阅
-func (e *EventTopic) Subscribe(conn *websocket.Conn, ch chan<- []byte) {
+func (e *EventTopic) Subscribe(ctx context.Context, conn *websocket.Conn, ch chan<- []byte) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	e.ConnList[conn] = ch
 }
 
 // Unsubscribe 取消订阅 isCancel-是否取消队列
-func (e *EventTopic) Unsubscribe(conn *websocket.Conn, isCancel bool) int {
+func (e *EventTopic) Unsubscribe(ctx context.Context, conn *websocket.Conn, isCancel bool) int {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	_, ok := e.ConnList[conn]

@@ -30,9 +30,9 @@ func DeleteTopicMapConn(conn *websocket.Conn, isCancel bool) {
 }
 
 type TopicInterface interface {
-	Publish(msg []byte) error                            // 发布事件
-	Subscribe(conn *websocket.Conn, ch chan<- []byte)    // 订阅主题
-	Unsubscribe(conn *websocket.Conn, isCancel bool) int // 取消订阅主题
+	Publish(ctx context.Context, msg []byte) error                            // 发布事件
+	Subscribe(ctx context.Context, conn *websocket.Conn, ch chan<- []byte)    // 订阅主题
+	Unsubscribe(ctx context.Context, conn *websocket.Conn, isCancel bool) int // 取消订阅主题
 }
 
 // EventTopic 主题结构体
