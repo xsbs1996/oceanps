@@ -17,11 +17,11 @@ var (
 )
 
 // DeleteTopicMapConn 根据连接删除相关的订阅者
-func DeleteTopicMapConn(conn *websocket.Conn, isCancel bool) {
+func DeleteTopicMapConn(ctx context.Context, conn *websocket.Conn, isCancel bool) {
 	topicMapMu.Lock()
 	defer topicMapMu.Unlock()
 	for _, e := range topicMap {
-		connListLen := e.Unsubscribe(conn, isCancel)
+		connListLen := e.Unsubscribe(ctx, conn, isCancel)
 		if connListLen <= 0 {
 			delete(topicMap, e.queueName)
 			e.cancel()
@@ -30,9 +30,9 @@ func DeleteTopicMapConn(conn *websocket.Conn, isCancel bool) {
 }
 
 type TopicInterface interface {
-	Publish(ctx context.Context, msg []byte) error                            // 发布事件
-	Subscribe(ctx context.Context, conn *websocket.Conn, ch chan<- []byte)    // 订阅主题
-	Unsubscribe(ctx context.Context, conn *websocket.Conn, isCancel bool) int // 取消订阅主题
+	Publish(ctx context.Context, msg []byte, exp time.Duration, extra ...string) error // 发布事件
+	Subscribe(ctx context.Context, conn *websocket.Conn, ch chan<- []byte)             // 订阅主题
+	Unsubscribe(ctx context.Context, conn *websocket.Conn, isCancel bool) int          // 取消订阅主题
 }
 
 // EventTopic 主题结构体
