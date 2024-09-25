@@ -37,29 +37,29 @@ func (c *RedisPushPull) CheckClient() error {
 	return nil
 }
 
-// PushMsgFn redis发送订阅消息
-func (c *RedisPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte, exp time.Duration, extra ...string) error {
+// PushMsg redis发送订阅消息
+func (c *RedisPushPull) PushMsg(ctx context.Context, topic string, body *PushMsgBody) error {
 	rdb, err := GetRedisClient(c)
 	if err != nil {
 		return err
 	}
 	defer func(rdb *redis.Client) { _ = rdb.Close() }(rdb)
 
-	err = rdb.LPush(ctx, queueName, string(msg)).Err()
+	err = rdb.LPush(ctx, topic, string(body.Msg)).Err()
 	if err != nil {
 		return err
 	}
 
-	if exp > 0 {
+	if body.Exp > 0 {
 		// 设置过期时间
-		_ = rdb.Expire(ctx, queueName, exp).Err()
+		_ = rdb.Expire(ctx, topic, body.Exp).Err()
 	}
 
 	return nil
 }
 
-// PullMsgFn redis拉取订阅消息并发送到管道
-func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan chan<- []byte) error {
+// PullMsg redis拉取订阅消息并发送到管道
+func (c *RedisPushPull) PullMsg(ctx context.Context, topic string, msgChan chan<- []byte) error {
 	defer close(msgChan)
 	rdb, err := GetRedisClient(c)
 	if err != nil {
@@ -72,7 +72,7 @@ func (c *RedisPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan
 		case <-ctx.Done():
 			return nil
 		default:
-			result, err := rdb.BRPop(ctx, time.Second*1, queueName).Result()
+			result, err := rdb.BRPop(ctx, time.Second*1, topic).Result()
 			if err != nil {
 				continue
 			}

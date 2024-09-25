@@ -89,8 +89,8 @@ func (c *RabbitMqPushPull) CheckClient() error {
 	return nil
 }
 
-// PushMsgFn rabbit发送订阅消息
-func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg []byte, exp time.Duration, extra ...string) error {
+// PushMsg rabbit发送订阅消息
+func (c *RabbitMqPushPull) PushMsg(ctx context.Context, topic string, body *PushMsgBody) error {
 	conn, err := GetRabbitMqConn(c)
 	if err != nil {
 		return err
@@ -101,7 +101,7 @@ func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg 
 	}
 	defer func(ch *amqp.Channel) { _ = ch.Close() }(ch)
 
-	_, err = ch.QueueDeclare(queueName, true, false, false, false, nil)
+	_, err = ch.QueueDeclare(topic, true, false, false, false, nil)
 	if err != nil {
 		return err
 	}
@@ -110,17 +110,17 @@ func (c *RabbitMqPushPull) PushMsgFn(ctx context.Context, queueName string, msg 
 	publishing := amqp.Publishing{
 		DeliveryMode: amqp.Persistent,
 		ContentType:  "text/plain",
-		Body:         msg,
+		Body:         body.Msg,
 	}
-	if exp > 0 {
-		publishing.Expiration = strconv.FormatInt(exp.Milliseconds(), 10)
+	if body.Exp > 0 {
+		publishing.Expiration = strconv.FormatInt(body.Exp.Milliseconds(), 10)
 	}
 
-	return ch.PublishWithContext(ctx, "", queueName, false, false, publishing)
+	return ch.PublishWithContext(ctx, "", topic, false, false, publishing)
 }
 
-// PullMsgFn rabbitmq拉取订阅消息并发送到管道
-func (c *RabbitMqPushPull) PullMsgFn(ctx context.Context, queueName string, msgChan chan<- []byte) error {
+// PullMsg rabbitmq拉取订阅消息并发送到管道
+func (c *RabbitMqPushPull) PullMsg(ctx context.Context, queueName string, msgChan chan<- []byte) error {
 	conn, err := GetRabbitMqConn(c)
 	if err != nil {
 		return err

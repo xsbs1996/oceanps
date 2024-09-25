@@ -82,7 +82,7 @@ func NewEventTopic(topic string, user string, timeout time.Duration, pPM oceanps
 			return event
 		}
 		go func() {
-			if err := event.pPManage.PullMsgFn(ctx, event.queueName, event.MsgChan); err != nil {
+			if err := event.pPManage.PullMsg(ctx, event.queueName, event.MsgChan); err != nil {
 				panic(err)
 			}
 		}()

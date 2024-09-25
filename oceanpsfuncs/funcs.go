@@ -9,10 +9,17 @@ import (
 
 var PushPullMap = &sync.Map{}
 
+type PushMsgBody struct {
+	Msg     []byte        // 消息体
+	Exp     time.Duration // 过期时间
+	IsAsync bool          // 是否异步
+	Key     string
+}
+
 type PushPullManage interface {
-	CheckClient() error                                                                                // 检测链接
-	PushMsgFn(ctx context.Context, topic string, msg []byte, exp time.Duration, extra ...string) error // push消息
-	PullMsgFn(ctx context.Context, topic string, msgChan chan<- []byte) error                          // pull消息
+	CheckClient() error                                                     // 检测链接
+	PushMsg(ctx context.Context, topic string, body *PushMsgBody) error     // push消息
+	PullMsg(ctx context.Context, topic string, msgChan chan<- []byte) error // pull消息
 }
 
 // RegisterPushPull 注册

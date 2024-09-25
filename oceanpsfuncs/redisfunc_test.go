@@ -16,7 +16,7 @@ func TestRedisPushMsg(t *testing.T) {
 		Password: "exchange",
 	}
 	for i := 0; i <= 100; i++ {
-		err := redisC.PushMsgFnExp(context.Background(), "TestRedisPushMsg"+strconv.Itoa(i), []byte("hello world"), time.Second*30)
+		err := redisC.PushMsg(context.Background(), "TestRedisPushMsg"+strconv.Itoa(i), &PushMsgBody{Msg: []byte("hello world" + strconv.Itoa(i)), Exp: time.Second * 30})
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -35,7 +35,7 @@ func TestRedisPullMsg(t *testing.T) {
 	}
 	msgChan := make(chan []byte, 10)
 	go func() {
-		err := redisC.PullMsgFn(context.Background(), "TestRedisPushMsg", msgChan)
+		err := redisC.PullMsg(context.Background(), "TestRabbitMqPushMsg", msgChan)
 		if err != nil {
 			fmt.Println(err)
 			return

@@ -17,7 +17,7 @@ func TestRabbitMqPushMsg(t *testing.T) {
 		Password: "123456",
 	}
 	for i := 0; i <= 100; i++ {
-		err := rabbitC.PushMsgFn(context.Background(), "TestRabbitMqPushMsg", []byte("hello world"+strconv.Itoa(i)))
+		err := rabbitC.PushMsg(context.Background(), "TestRabbitMqPushMsg", &PushMsgBody{Msg: []byte("hello world" + strconv.Itoa(i))})
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -37,7 +37,7 @@ func TestRabbitPullMsg(t *testing.T) {
 	}
 	msgChan := make(chan []byte, 10)
 	go func() {
-		err := rabbitC.PullMsgFn(context.Background(), "TestRabbitMqPushMsg", msgChan)
+		err := rabbitC.PullMsg(context.Background(), "TestRabbitMqPushMsg", msgChan)
 		if err != nil {
 			fmt.Println(err)
 			return

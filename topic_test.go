@@ -10,10 +10,9 @@ import (
 )
 
 func TestGetEventTopicQueue(t *testing.T) {
-	e := NewEventTopic("TestTopic", "User", time.Second*5, &oceanpsfuncs.RedisPushPull{
-		Ip:       "127.0.0.1",
-		Port:     "6379",
-		DB:       0,
+	e := NewEventTopic("TestTopic", "User", time.Second*5, &oceanpsfuncs.KafkaMqPushPull{
+		Host:     []string{"localhost:9092"},
+		Username: "",
 		Password: "",
 	})
 	if e.Error != nil {
@@ -26,8 +25,13 @@ func TestGetEventTopicQueue(t *testing.T) {
 	e.Subscribe(context.Background(), conn, wMsg)
 
 	go func() {
-		for i := 0; i <= 1; i++ {
-			err := e.Publish(context.Background(), []byte("hello world"), 0)
+		for i := 0; i <= 10; i++ {
+			err := e.Publish(context.Background(), &PublishMsgBody{
+				Msg:     []byte("hello world"),
+				Exp:     0,
+				IsAsync: false,
+				Key:     "",
+			})
 			if err != nil {
 				fmt.Println("err:", err)
 				return
